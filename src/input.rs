@@ -68,7 +68,7 @@ fn normalize_domain(input: &str) -> Option<String> {
 
     // Accept raw mailbox entries. Everything through the final '@' is local
     // part and must not be sent to Spamhaus DBL.
-    // Example: bounce-abc@envios.suantc.com -> envios.suantc.com
+    // Example: bounce-abc@envios.example -> envios.example.com
     if let Some((_, domain_part)) = candidate.rsplit_once('@') {
         candidate = domain_part.trim().to_string();
     }
@@ -117,14 +117,14 @@ mod tests {
     #[test]
     fn normalizes_plain_domains() {
         assert_eq!(normalize_domain("Example.COM."), Some("example.com".into()));
-        assert_eq!(normalize_domain("envios.suantc.com"), Some("envios.suantc.com".into()));
+        assert_eq!(normalize_domain("envios.example.com"), Some("envios.example.com".into()));
     }
 
     #[test]
     fn extracts_domain_from_email_address() {
         assert_eq!(
-            normalize_domain("bounce-776092e70d5348f5e3bd65fbe069bed3@envios.suantc.com"),
-            Some("envios.suantc.com".into())
+            normalize_domain("bounce-776092e70d5348f5e3bd65fbe069bed3@envios.example.com"),
+            Some("envios.example.com".into())
         );
         assert_eq!(
             normalize_domain("<user@MAIL.Example.COM>"),
