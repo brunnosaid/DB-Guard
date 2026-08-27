@@ -68,7 +68,7 @@ fn normalize_domain(input: &str) -> Option<String> {
 
     // Accept raw mailbox entries. Everything through the final '@' is local
     // part and must not be sent to Spamhaus DBL.
-    // Example: bounce-abc@envios.example -> envios.example.com
+    // Example: bounce-abc@envios.domain -> envios.domain.com
     if let Some((_, domain_part)) = candidate.rsplit_once('@') {
         candidate = domain_part.trim().to_string();
     }
@@ -116,31 +116,31 @@ mod tests {
 
     #[test]
     fn normalizes_plain_domains() {
-        assert_eq!(normalize_domain("Example.COM."), Some("example.com".into()));
-        assert_eq!(normalize_domain("envios.example.com"), Some("envios.example.com".into()));
+        assert_eq!(normalize_domain("Domain.COM."), Some("domain.com".into()));
+        assert_eq!(normalize_domain("envios.domain.com"), Some("envios.domain.com".into()));
     }
 
     #[test]
     fn extracts_domain_from_email_address() {
         assert_eq!(
-            normalize_domain("bounce-776092e70d5348f5e3bd65fbe069bed3@envios.example.com"),
-            Some("envios.example.com".into())
+            normalize_domain("bounce-776092e70d5348f5e3bd65fbe069bed3@envios.domain.com"),
+            Some("envios.domain.com".into())
         );
         assert_eq!(
             normalize_domain("<user@MAIL.Example.COM>"),
-            Some("mail.example.com".into())
+            Some("mail.domain.com".into())
         );
     }
 
     #[test]
     fn extracts_hostname_from_urls_and_ports() {
         assert_eq!(
-            normalize_domain("https://Sub.Example.com/path?q=1"),
-            Some("sub.example.com".into())
+            normalize_domain("https://Sub.Domain.com/path?q=1"),
+            Some("sub.domain.com".into())
         );
         assert_eq!(
-            normalize_domain("mail.example.com:443/path"),
-            Some("mail.example.com".into())
+            normalize_domain("mail.domain.com:443/path"),
+            Some("mail.domain.com".into())
         );
     }
 
